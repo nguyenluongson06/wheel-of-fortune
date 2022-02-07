@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Wheel of Fortune</title>
+        <script src="./Winwheel.js"></script>
+        <script src="./TweenMax.js"></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <canvas id="canvas" width="1000" height="1000">
+                Canvas is not supported, please use another browser.
+            </canvas>
+            <img id="prizePointer" src="./pointer.png" alt="V" />
+        </div>
+        <button class="spin clickable" onclick="startSpin();">Quay</button>
+        <script>
+            let count = 0;
+            let spinning = false;
+
+            let theWheel = new Winwheel({
+                numSegments: 4,
+                lineWidth: 1,
+                textAlignment: 'outer',
+                textOrientation: 'curved',
+                outerRadius: 279,
+                centerX: 400,
+                centerY: 402,
+                rotationAngle: 0,
+                responsive: true,
+                segments: [
+                    { fillStyle: '#FF0000', text: '50k' },
+                    { fillStyle: '#FFFF00', text: '2k' },
+                    { fillStyle: '#FF0000', text: '10k' },
+                    { fillStyle: '#FFFF00', text: '5k' },
+                ],
+                animation: {
+                    type: 'spinToStop',
+                    duration: 5,
+                    stopAngle: null,
+                    spins: 5 + Math.round(Math.random() * 2 + 1),
+                    callbackFinished: 'alertPrize();',
+                    clearTheCanvas: true,
+                },
+            });
+
+            let prize = [2, 2, 2, 2, 2, 5, 5, 5, 5, 10, 10, 50];
+
+            function startSpin() {
+                if (!spinning) {
+                    document
+                        .querySelector('.spin')
+                        .classList.remove('clickable');
+                    theWheel.rotationAngle = 0;
+                    calculatePrize();
+                    ++count;
+                    console.log(count);
+                    spinning = true;
+                }
+            }
+
+            function alertPrize() {
+                let winningSegment = theWheel.getIndicatedSegment();
+                document.querySelector('.spin').classList.add('clickable');
+                spinning = false;
+
+                alert(
+                    'Xin chúc mừng, bạn đã thắng ' + winningSegment.text + '!'
+                );
+            }
+
+            function calculatePrize() {
+                let pos;
+                if (count < 5) {
+                    pos = Math.floor(Math.random() * (prize.length - 1));
+                } else {
+                    pos = Math.floor(Math.random() * prize.length);
+                }
+
+                if (prize[pos] == 2) {
+                    theWheel.animation.stopAngle = Math.floor(
+                        91 + Math.random() * 88
+                    );
+                } else if (prize[pos] == 5) {
+                    theWheel.animation.stopAngle = Math.floor(
+                        271 + Math.random() * 88
+                    );
+                } else if (prize[pos] == 10) {
+                    theWheel.animation.stopAngle = Math.floor(
+                        181 + Math.random() * 88
+                    );
+                } else if (prize[pos] == 50) {
+                    theWheel.animation.stopAngle = Math.floor(
+                        1 + Math.random() * 88
+                    );
+                }
+
+                prize.splice(pos, 1);
+                console.log(prize);
+                theWheel.startAnimation();
+            }
+        </script>
+    </body>
+</html>

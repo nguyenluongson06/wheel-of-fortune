@@ -1,0 +1,66 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+}
+
+.container {
+    width: 1000px;
+    height: 1000px;
+    position: fixed;
+    top: 27.5%;
+    left: 7%;
+    margin-top: -200px;
+    margin-left: -200px;
+}
+
+#canvas {
+    z-index: 1;
+}
+
+#prizePointer {
+    position: absolute;
+    left: 375px;
+    top: 76px;
+    z-index: 99;
+}
+
+body {
+    background-image: url(./COVER_cropped.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: -8.5%;
+    /*background-position: center;
+    background-attachment: fixed;*/
+}
+
+.spin {
+    padding: 8px 24px;
+    border: 2px solid gray;
+    background-color: white;
+    color: gray;
+    border-radius: 4px;
+    position: fixed;
+    top: 48.6%;
+    left: 41%;
+    font-weight: 900;
+}
+
+.clickable {
+    padding: 8px 24px;
+    border: 2px solid red;
+    background-color: white;
+    color: red;
+    border-radius: 4px;
+    cursor: pointer;
+    position: fixed;
+    top: 48.6%;
+    left: 41%;
+    font-weight: 900;
+}
+
+.clickable:hover {
+    background-color: red;
+    color: white;
+}
