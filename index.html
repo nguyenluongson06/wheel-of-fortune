@@ -1,105 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Wheel of Fortune</title>
-        <script src="./Winwheel.js"></script>
-        <script src="./TweenMax.js"></script>
-        <link rel="stylesheet" href="style.css" />
-    </head>
-    <body>
-        <div class="container">
-            <canvas id="canvas" width="1000" height="1000">
-                Canvas is not supported, please use another browser.
-            </canvas>
-            <img id="prizePointer" src="./pointer.png" alt="V" />
-        </div>
-        <button class="spin clickable" onclick="startSpin();">Quay</button>
-        <script>
-            let count = 0;
-            let spinning = false;
+	<head>
+		<meta charset="UTF-8" />
+		<title>Wheel of Fortune</title>
+		<script src="./Winwheel.js"></script>
+		<script src="./TweenMax.js"></script>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="container">
+			<canvas id="canvas" width="1000" height="1000">
+				Canvas is not supported, please use another browser.
+			</canvas>
+			<img id="prizePointer" src="./pointer.png" alt="V" />
+		</div>
+		<button class="spin clickable" onclick="startSpin();">Quay</button>
+		<div id="myModal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>Xin chúc mừng</h2>
+				</div>
+				<div class="modal-body"></div>
+				<button class="close">OK</button>
+			</div>
+		</div>
+		<script>
+			let count = 0;
+			let spinning = false;
 
-            let theWheel = new Winwheel({
-                numSegments: 4,
-                lineWidth: 1,
-                textAlignment: 'outer',
-                textOrientation: 'curved',
-                outerRadius: 279,
-                centerX: 400,
-                centerY: 402,
-                rotationAngle: 0,
-                responsive: true,
-                segments: [
-                    { fillStyle: '#FF0000', text: '50k' },
-                    { fillStyle: '#FFFF00', text: '2k' },
-                    { fillStyle: '#FF0000', text: '10k' },
-                    { fillStyle: '#FFFF00', text: '5k' },
-                ],
-                animation: {
-                    type: 'spinToStop',
-                    duration: 5,
-                    stopAngle: null,
-                    spins: 5 + Math.round(Math.random() * 2 + 1),
-                    callbackFinished: 'alertPrize();',
-                    clearTheCanvas: true,
-                },
-            });
+			let theWheel = new Winwheel({
+				numSegments: 4,
+				lineWidth: 1,
+				textAlignment: 'outer',
+				textOrientation: 'curved',
+				outerRadius: 279,
+				centerX: 400,
+				centerY: 402,
+				rotationAngle: 0,
+				responsive: true,
+				segments: [
+					{ fillStyle: '#FF0000', text: '200k' },
+					{ fillStyle: '#FFFF00', text: '20k' },
+					{ fillStyle: '#FF0000', text: '100k' },
+					{ fillStyle: '#FFFF00', text: '50k' },
+				],
+				animation: {
+					type: 'spinToStop',
+					duration: 5,
+					stopAngle: null,
+					spins: 5 + Math.round(Math.random() * 2 + 1),
+					callbackFinished: 'alertPrize();',
+					clearTheCanvas: true,
+				},
+			});
 
-            let prize = [2, 2, 2, 2, 2, 5, 5, 5, 5, 10, 10, 50];
+			let prize = [
+				20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 50, 50, 50,
+				50, 50, 100, 100, 200,
+			];
 
-            function startSpin() {
-                if (!spinning) {
-                    document
-                        .querySelector('.spin')
-                        .classList.remove('clickable');
-                    theWheel.rotationAngle = 0;
-                    calculatePrize();
-                    ++count;
-                    console.log(count);
-                    spinning = true;
-                }
-            }
+			function startSpin() {
+				if (!spinning) {
+					document.querySelector('.spin').classList.remove('clickable');
+					theWheel.rotationAngle = 0;
+					calculatePrize();
+					++count;
+					console.log(count);
+					spinning = true;
+				}
+			}
 
-            function alertPrize() {
-                let winningSegment = theWheel.getIndicatedSegment();
-                document.querySelector('.spin').classList.add('clickable');
-                spinning = false;
+			const modal = document.getElementById('myModal');
+			const close = document.querySelector('.close');
+			const content = document.querySelector('.modal-body');
+			close.addEventListener('click', () => {
+				modal.style.display = 'none';
+			});
+			window.onclick = function (event) {
+				if (event.target == modal) {
+					modal.style.display = 'none';
+				}
+			};
+			function alertPrize() {
+				let winningSegment = theWheel.getIndicatedSegment();
+				document.querySelector('.spin').classList.add('clickable');
+				spinning = false;
 
-                alert(
-                    'Xin chúc mừng, bạn đã thắng ' + winningSegment.text + '!'
-                );
-            }
+				//alert('Xin chúc mừng, bạn đã thắng ' + winningSegment.text + '!');
+				content.textContent = `Bạn đã thắng ${winningSegment.text} !`;
+				modal.style.display = 'block';
+			}
 
-            function calculatePrize() {
-                let pos;
-                if (count < 5) {
-                    pos = Math.floor(Math.random() * (prize.length - 1));
-                } else {
-                    pos = Math.floor(Math.random() * prize.length);
-                }
+			function calculatePrize() {
+				let pos;
+				if (count < 5) {
+					pos = Math.floor(Math.random() * (prize.length - 1));
+				} else {
+					pos = Math.floor(Math.random() * prize.length);
+				}
 
-                if (prize[pos] == 2) {
-                    theWheel.animation.stopAngle = Math.floor(
-                        91 + Math.random() * 88
-                    );
-                } else if (prize[pos] == 5) {
-                    theWheel.animation.stopAngle = Math.floor(
-                        271 + Math.random() * 88
-                    );
-                } else if (prize[pos] == 10) {
-                    theWheel.animation.stopAngle = Math.floor(
-                        181 + Math.random() * 88
-                    );
-                } else if (prize[pos] == 50) {
-                    theWheel.animation.stopAngle = Math.floor(
-                        1 + Math.random() * 88
-                    );
-                }
+				if (prize[pos] == 20) {
+					theWheel.animation.stopAngle = Math.floor(91 + Math.random() * 88);
+				} else if (prize[pos] == 50) {
+					theWheel.animation.stopAngle = Math.floor(271 + Math.random() * 88);
+				} else if (prize[pos] == 100) {
+					theWheel.animation.stopAngle = Math.floor(181 + Math.random() * 88);
+				} else if (prize[pos] == 200) {
+					theWheel.animation.stopAngle = Math.floor(1 + Math.random() * 88);
+				}
 
-                prize.splice(pos, 1);
-                console.log(prize);
-                theWheel.startAnimation();
-            }
-        </script>
-    </body>
+				prize.splice(pos, 1);
+				console.log(prize);
+				theWheel.startAnimation();
+			}
+		</script>
+	</body>
 </html>
